@@ -15,6 +15,7 @@
 #include <ctime>
 #include <fstream>
 #include <cctype>
+#include <math.h>
 
 //User Libraries
 
@@ -29,7 +30,8 @@ int main(int argc, char** argv){
     srand(time(0));
 
     int roll1, roll2, roll3, dice1, dice2, dice3, point1 = 0, point2 = 0;
-    char fileAsk, betAsk, betting = 'Y', bRoll = 'Y', pRoll = 'Y';
+    char fileAsk, betAsk;
+    bool betting = true, bRoll = true, pRoll = true;
     // Money will have cents (atypical) due to professor requirements
     const float bank = 100.00, stBal = 100.00;
     float noCover = 0, cover = 0, bet = 0, bankBal, balance;
@@ -94,22 +96,20 @@ int main(int argc, char** argv){
                 break;
             }
             case 'N':{
-                betting = 'N';
+                betting = false;
                 break;
             }
             default:{
                 std::cout << "You did not make a bet." << "\n";
                 break;
             }
-
-           
         }
 
         if(noCover == 0){
-                betting = 'N';
+                betting = false;
         }
 
-    }while(betting == 'Y');
+    }while(betting == true);
 
     bankBal -= cover;
 
@@ -118,11 +118,11 @@ int main(int argc, char** argv){
     if(cover == 0){
         std::cout << "There were no bets made. The banker pockets the bank."   
             << "\n";
-        bRoll = 'N';
-        pRoll = 'N';
+        bRoll = false;
+        pRoll = false;
     }
 
-    while(bRoll == 'Y'){
+    while(bRoll == true){
         std::cout << "Banker rolls the dice." << "\n";
 
         roll1 = (rand() % 6) + 1;
@@ -162,8 +162,8 @@ int main(int argc, char** argv){
             }else{
                 bankBal += cover;
             }
-            bRoll = 'N';
-            pRoll = 'N';
+            bRoll = false;
+            pRoll = false;
         }else if(dice1 == 4 && dice2 == 5 && dice3 == 6){
             std::cout << "4-5-6 straight kill, banker automatic win"
                 << "\n";
@@ -173,8 +173,8 @@ int main(int argc, char** argv){
             }else{
                 bankBal += cover;
             }
-            bRoll = 'N';
-            pRoll = 'N';
+            bRoll = false;
+            pRoll = false;
         }else if(dice1 == dice2 && dice1 != 6 && dice3 == 6){
             std::cout << "Non-6 pair with a 6, banker automatic win"
                 << "\n";
@@ -184,8 +184,8 @@ int main(int argc, char** argv){
             }else{
                 bankBal += cover;
             }
-            bRoll = 'N';
-            pRoll = 'N';
+            bRoll = false;
+            pRoll = false;
         }else if(dice1 == 1 && dice2 == 2 && dice3 == 3){
             std::cout << "1-2-3 straight lose, banker automatic loss"
                 << "\n";
@@ -193,8 +193,8 @@ int main(int argc, char** argv){
                 std::cout << "Player wins $" << bet * 2 << "\n";
                 balance += (bet * 2);
             }
-            bRoll = 'N';
-            pRoll = 'N';
+            bRoll = false;
+            pRoll = false;
         }else if(dice2 == dice3 && dice2 != 1 && dice1 == 1){
             std::cout << "Non-1 pair with a 1, banker automatic loss"
                 << "\n";
@@ -202,25 +202,25 @@ int main(int argc, char** argv){
                 std::cout << "Player wins $" << bet * 2 << "\n";
                 balance += (bet * 2);
             }
-            bRoll = 'N';
-            pRoll = 'N';
+            bRoll = false;
+            pRoll = false;
         }else if(dice1 == dice2){
             point1 = dice3;
             std::cout << "The banker's point is: " << point1 << "\n";
-            bRoll = 'N';
+            bRoll = false;
         }else if(dice2 == dice3){
             point1 = dice1;
             std::cout << "The banker's point is: " << point1 << "\n";
-            bRoll = 'N';
+            bRoll = false;
         }else if(dice1 == dice3){
             point1 = dice2;
             std::cout << "The banker's point is: " << point1 << "\n";
-            bRoll = 'N';
+            bRoll = false;
         }
         
     }
 
-    while(pRoll == 'Y'){
+    while(pRoll == true){
         std::cout << "Player rolls the dice." << "\n";
 
         roll1 = (rand() % 6) + 1;
@@ -258,14 +258,14 @@ int main(int argc, char** argv){
                 std::cout << "Player wins $" << bet * 5 << "\n";
                 balance += (bet * 5);
             }
-            pRoll = 'N';
+            pRoll = false;
         }else if(dice1 == dice2 == dice3 && dice1 != 1){
             std::cout << "Triples, player automatic win" << "\n";
             if(bet > 0){
                 std::cout << "Player wins $" << bet * 3 << "\n";
                 balance += (bet * 3);
             }
-            pRoll = 'N';
+            pRoll = false;
         }else if(dice1 == 4 && dice2 == 5 && dice3 == 6){
             std::cout << "4-5-6 straight kill, player automatic win"
                 << "\n";
@@ -273,7 +273,7 @@ int main(int argc, char** argv){
                 std::cout << "Player wins $" << bet * 2 << "\n"; 
                 balance += (bet * 2);
             }
-            pRoll = 'N';
+            pRoll = false;
         }else if(dice1 == 1 && dice2 == 2 && dice3 == 3){
             std::cout << "1-2-3 straight lose, player automatic loss"
                 << "\n";
@@ -281,19 +281,19 @@ int main(int argc, char** argv){
                 std::cout << "Player loses $" << bet << "\n";
                 bankBal += bet + cover;
             }
-            pRoll = 'N';
+            pRoll = false;
         }else if(dice1 == dice2){
             point2 = dice3;
             std::cout << "The player's point is: " << point2 << "\n";
-            pRoll = 'N';
+            pRoll = false;
         }else if(dice2 == dice3){
             point2 = dice1;
             std::cout << "The player's point is: " << point2 << "\n";
-            pRoll = 'N';
+            pRoll = false;
         }else if(dice1 == dice3){
             point2 = dice2;
             std::cout << "The player's point is: " << point2 << "\n";
-            pRoll = 'N';
+            pRoll = false;
         }
 
         std::cout << "\n";
@@ -308,13 +308,12 @@ int main(int argc, char** argv){
                     << bet * 2 << "\n";
                 balance += (bet * 2);
             }
-            pRoll = 'N';
         }
     }
 
     std::cout << "\n";
-    std::cout << "The banker ends with $" << bankBal << "\n";
-    std::cout << "The player ends with $" << balance << "\n";
+    std::cout << "The banker ends with $" << round(bankBal) << "\n";
+    std::cout << "The player ends with $" << round(balance) << "\n";
 
     std::cout << "Would you like to record this result? [Y/N]: ";
     std::cin >> fileAsk;
