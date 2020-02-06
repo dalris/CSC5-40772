@@ -328,12 +328,11 @@ int main(int argc, char** argv){
 
     switch(fileAsk){
         case 'Y':{
-            std::fstream logs;
-            logs.open ("records.txt", std::fstream::in | std::fstream::ate);
+            std::ofstream logs;
+            logs.open ("records.txt", std::ofstream::in | std::ofstream::ate);
             if(logs.is_open()){
                 logs << "The banker ended with $" << bankBal << "\n";
                 logs << "The player ends with $" << balance << "\n";
-                logs << "\n";
                 logs.close();
 
                 std::cout << "Session recorded." << "\n";
