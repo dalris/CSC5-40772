@@ -29,7 +29,7 @@ int main(int argc, char** argv){
     srand(time(0));
 
     int roll1, roll2, roll3, dice1, dice2, dice3, point1 = 0, point2 = 0;
-    char betAsk, betting = 'Y', bRoll = 'Y', pRoll = 'Y';
+    char fileAsk, betAsk, betting = 'Y', bRoll = 'Y', pRoll = 'Y';
     // Money will have cents (atypical) due to professor requirements
     const float bank = 100.00, stBal = 100.00;
     float noCover = 0, cover = 0, bet = 0, bankBal, balance;
@@ -49,23 +49,26 @@ int main(int argc, char** argv){
         std::cin >> betAsk;
         betAsk = toupper(betAsk);
 
+        std::cout << "\n";
+        
         while(betAsk != 'Y' && betAsk != 'N'){
             std::cout << "Please enter a valid input [Y/N]: ";
             std::cin >> betAsk;
             betAsk = toupper(betAsk);
+            std::cout << "\n";
         }
-
-        std::cout << "\n";
 
         switch(betAsk){
             case 'Y':{
                 if(balance >= noCover){
                     std::cout << "You can bet up to $" << noCover << ": ";
                     std::cin >> bet;
+                    std::cout << "\n";
 
                     while(bet > noCover){
                         std::cout << "You can bet up to $" << noCover << ": ";
                         std::cin >> bet;
+                        std::cout << "\n";
                     }
 
                     balance -= bet;
@@ -75,10 +78,12 @@ int main(int argc, char** argv){
                 }else{
                     std::cout << "You can bet up to $" << balance << ": ";
                     std::cin >> bet;
+                    std::cout << "\n";
 
                     while(bet > balance){
                         std::cout << "You can bet up to $" << balance << ": ";
                         std::cin >> bet;
+                        std::cout << "\n";
                     }
 
                     balance -= bet;
@@ -310,6 +315,40 @@ int main(int argc, char** argv){
     std::cout << "\n";
     std::cout << "The banker ends with $" << bankBal << "\n";
     std::cout << "The player ends with $" << balance << "\n";
+
+    std::cout << "Would you like to record this result? [Y/N]: ";
+    std::cin >> fileAsk;
+    fileAsk = toupper(fileAsk);
+
+    while(fileAsk != 'Y' && fileAsk != 'N'){
+        std::cout << "Please enter a valid response [Y/N]: ";
+        std::cin >> fileAsk;
+        fileAsk = toupper(fileAsk);
+    }
+
+    switch(fileAsk){
+        case 'Y':{
+            std::fstream logs;
+            logs.open ("records.txt", std::fstream::in | std::fstream::ate);
+            if(logs.is_open()){
+                logs << "The banker ended with $" << bankBal << "\n";
+                logs << "The player ends with $" << balance << "\n";
+                logs << "\n";
+                logs.close();
+
+                std::cout << "Session recorded." << "\n";
+            }else{
+                std::cout << "Unable to open file." << "\n";
+            }
+            break;
+        }
+        case 'N':{
+            break;
+        }
+        default:{
+            break;
+        }
+    }
 
     return 0;
 }

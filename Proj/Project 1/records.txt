@@ -1,0 +1,2 @@
+The banker ended with $0
+The player ends with $200
