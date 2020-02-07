@@ -33,7 +33,7 @@ int main(int argc, char** argv){
     char fileAsk, betAsk;
     bool betting = true, bRoll = true, pRoll = true;
     // Money may have cents (atypical) due to professor requirements
-    const float bank = 100.00, stBal = 100.00;
+    const float bank = 1000.50, stBal = 100.00;
     float noCover = 0, cover = 0, bet = 0, bankBal, balance;
 
     // Let the player know the starting amounts
