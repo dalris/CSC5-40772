@@ -16,10 +16,11 @@
 #include <cstdlib> // for random
 #include <ctime> // for time
 #include <fstream> // for file output
-#include <cctype> // for converting to uppercase
+#include <cctype> // for converting to uppercase & checking input
 #include <math.h> // for rounding numbers
 #include <algorithm> // for sorting array
 #include <vector> // for using vectors
+#include <string> // for using strings
 
 //User Libraries
 
@@ -27,23 +28,35 @@
 //Only Universal Constants, Math, Physics, Conversions, Higher Dimensions
 
 //Function Prototypes
+void roll(int *arr);
+void roll(std::vector<int> &vect);
+void sortVect(std::vector<int> &vect);
+void swap(int*, int*);
+void bubbleSort(int *, int);
+void selectionSort(int *, int);
+bool askFile();
 
 //Execution Begins Here
 int main(int argc, char** argv){
     //Set Random Number seed
     srand(time(0));
 
-    int bDice[3], point1 = 0, point2 = 0;
-    char fileAsk, betAsk;
-    bool betting = true, bRoll = true, pRoll = true;
+    static const int size = 3;
+    int bDice[size], point1 = 0, point2 = 0, pickSort;
+    char betAsk;
+    bool betting = true, bRoll = true, pRoll = true, logResult;
     // Money may have cents (atypical) due to professor requirements
     const float bank = 1000.50, stBal = 100.00;
     float noCover = 0, cover = 0, bet = 0, bankBal, balance;
     std::vector<int> pDice;
+    std::string pName;
+
+    std::cout << "Enter your name: ";
+    std::cin >> pName;
 
     // Let the player know the starting amounts
     std::cout << "The starting bank is $" << bank << "\n";
-    std::cout << "Player starting balance is $" << stBal << "\n\n";
+    std::cout << "Your starting balance is $" << stBal << "\n\n";
     
     bankBal = bank;
     balance = stBal;
@@ -55,16 +68,16 @@ int main(int argc, char** argv){
     do{
         std::cout << "The bank is: $" << bank << "\n";
         std::cout << "The current unconvered amount is: $" << noCover << "\n";
-        std::cout << "Player current balance is: $" << balance << "\n\n";
-        std::cout << "Would you like to make a bet? [Y/N]: ";
+        std::cout << "Your current balance is: $" << balance << "\n\n";
+        std::cout << "Would you like to make a bet? [Y/N] (Q to quit game): ";
         std::cin >> betAsk;
         betAsk = toupper(betAsk); // Set the input to uppercase (y to Y)
 
         std::cout << "\n";
         
         // Input Validation
-        while(betAsk != 'Y' && betAsk != 'N'){
-            std::cout << "Please enter a valid input [Y/N]: ";
+        while(betAsk != 'Y' && betAsk != 'N' && betAsk != 'Q'){
+            std::cout << "Please enter a valid input [Y/N/Q]: ";
             std::cin >> betAsk;
             betAsk = toupper(betAsk);
             std::cout << "\n";
@@ -114,6 +127,9 @@ int main(int argc, char** argv){
                 betting = false;
                 break;
             }
+            case 'Q':{
+                exit(0);
+            }
             default:{ // Just in case something fails
                 std::cout << "You did not make a bet." << "\n";
                 break;
@@ -148,12 +164,33 @@ int main(int argc, char** argv){
     while(bRoll == true){
         std::cout << "Banker rolls the dice." << "\n";
 
-        // Roll three dice
-        for(int i = 0; i < 3; i++){
-            bDice[i] = (rand() & 6) + 1;
+        // Roll then sort banker's three dice
+        roll(bDice);
+
+        std::cout << "How would you like to sort the dice?" << "\n";
+        std::cout << "1. Bubble Sort" << "\n";
+        std::cout << "2. Selection Sort" << "\n";
+        std::cin >> pickSort;
+
+        while(pickSort != 1 && pickSort != 2){
+            std::cout << "Please select a valid option." << "\n";
+            std::cout << "1. Bubble Sort" << "\n";
+            std::cout << "2. Selection Sort" << "\n";
+            std::cin >> pickSort;
         }
 
-        std::sort(bDice, bDice + 3);
+        switch(pickSort){
+        case 1:{
+            bubbleSort(bDice, size);
+            break;
+        }
+        case 2:{
+            selectionSort(bDice, size);
+            break;
+        }
+        default:
+            break;
+        }
 
         // Display the banker's three dice rolls
         std::cout << "The banker's roll is: ";
@@ -164,7 +201,7 @@ int main(int argc, char** argv){
         if(bDice[0] == bDice[1] == bDice[2]){
             std::cout << "Triples, banker automatic win" << "\n";
             if(bet > 0){
-                std::cout << "Player loses $" << bet << "\n"; 
+                std::cout << "You lose $" << bet << "\n"; 
                 bankBal += bet + cover;
             }else{
                 bankBal += cover;
@@ -172,11 +209,11 @@ int main(int argc, char** argv){
             bRoll = false;
             pRoll = false;
         // A roll of 4, 5, 6 is a "straight kill" automatic win
-        }else if(bDice[0] == 4 && bDice[1] == 5 && bDice[3] == 6){
+        }else if(bDice[0] == 4 && bDice[1] == 5 && bDice[2] == 6){
             std::cout << "4-5-6 straight kill, banker automatic win"
                 << "\n";
             if(bet > 0){
-                std::cout << "Player loses $" << bet << "\n"; 
+                std::cout << "You lose $" << bet << "\n"; 
                 bankBal += bet + cover;
             }else{
                 bankBal += cover;
@@ -188,7 +225,7 @@ int main(int argc, char** argv){
             std::cout << "Non-6 pair with a 6, banker automatic win"
                 << "\n";
             if(bet > 0){
-                std::cout << "Player loses $" << bet << "\n"; 
+                std::cout << "You lose $" << bet << "\n"; 
                 bankBal += bet + cover;
             }else{
                 bankBal += cover;
@@ -200,7 +237,7 @@ int main(int argc, char** argv){
             std::cout << "1-2-3 straight lose, banker automatic loss"
                 << "\n";
             if(bet > 0){
-                std::cout << "Player wins $" << bet * 2 << "\n";
+                std::cout << "You win $" << bet * 2 << "\n";
                 balance += (bet * 2);
                 bankBal -= (bet * 2);
             }
@@ -211,7 +248,7 @@ int main(int argc, char** argv){
             std::cout << "Non-1 pair with a 1, banker automatic loss"
                 << "\n";
             if(bet > 0){
-                std::cout << "Player wins $" << bet * 2 << "\n";
+                std::cout << "You win $" << bet * 2 << "\n";
                 balance += (bet * 2);
                 bankBal -= (bet * 2);
             }
@@ -237,52 +274,50 @@ int main(int argc, char** argv){
 
     // Begin the player's dice rolls
     while(pRoll == true){
-        std::cout << "Player rolls the dice." << "\n";
+        std::cout << pName << " rolls the dice." << "\n";
 
-        for(int i = 0; i < 3; i++){
-            pDice.push_back((rand() & 6) + 1);
-        }
-
-        std::sort(pDice.begin(), pDice.end());
+        // Roll then sort player's three dice
+        roll(pDice);
+        sortVect(pDice);
 
         // Display the player's three dice rolls
-        std::cout << "The player's roll is: ";
+        std::cout << "Your roll is: ";
         std::cout << pDice[0] << " " << pDice[1] << " and "
             << pDice[2] << "\n\n";
 
         // All three dice rolled as 1 is an automatic win with a bet
         //  multiplier of 5
         if(pDice[0] == 1 && pDice[1] == 1 && pDice[2] == 1){
-            std::cout << "Triple 1s, player automatic win" << "\n";
+            std::cout << "Triple 1s, " << pName << " automatic win" << "\n";
             if(bet > 0){
-                std::cout << "Player wins $" << bet * 5 << "\n";
+                std::cout << "You win $" << bet * 5 << "\n";
                 balance += (bet * 5);
                 bankBal -= (bet * 5);
             }
             pRoll = false;
         // Non-1 triples is an automatic win with a bet multipler of 3
         }else if(pDice[0] == pDice[1] == pDice[2] && pDice[0] != 1){
-            std::cout << "Triples, player automatic win" << "\n";
+            std::cout << "Triples, " << pName << " automatic win" << "\n";
             if(bet > 0){
-                std::cout << "Player wins $" << bet * 3 << "\n";
+                std::cout << "You win $" << bet * 3 << "\n";
                 balance += (bet * 3);
                 bankBal -= (bet * 2);
             }
             pRoll = false;
         }else if(pDice[0] == 4 && pDice[1] == 5 && pDice[2] == 6){
-            std::cout << "4-5-6 straight kill, player automatic win"
+            std::cout << "4-5-6 straight kill, " << pName << "automatic win"
                 << "\n";
             if(bet > 0){
-                std::cout << "Player wins $" << bet * 2 << "\n"; 
+                std::cout << "You win $" << bet * 2 << "\n"; 
                 balance += (bet * 2);
                 bankBal -= (bet * 2);
             }
             pRoll = false;
         }else if(pDice[0] == 1 && pDice[1] == 2 && pDice[2] == 3){
-            std::cout << "1-2-3 straight lose, player automatic loss"
+            std::cout << "1-2-3 straight lose, " << pName << "automatic loss"
                 << "\n";
             if(bet > 0){
-                std::cout << "Player loses $" << bet << "\n";
+                std::cout << "You lose $" << bet << "\n";
                 bankBal += bet + cover;
             }
             pRoll = false;
@@ -290,15 +325,15 @@ int main(int argc, char** argv){
         //  a pair is rolled
         }else if(pDice[0] == pDice[1]){
             point2 = pDice[2];
-            std::cout << "The player's point is: " << point2 << "\n";
+            std::cout << pName << "'s point is: " << point2 << "\n";
             pRoll = false;
         }else if(pDice[1] == pDice[2]){
             point2 = pDice[0];
-            std::cout << "The player's point is: " << point2 << "\n";
+            std::cout << pName << "'s point is: " << point2 << "\n";
             pRoll = false;
         }else if(pDice[0] == pDice[2]){
             point2 = pDice[1];
-            std::cout << "The player's point is: " << point2 << "\n";
+            std::cout << pName << "'s point is: " << point2 << "\n";
             pRoll = false;
         }
 
@@ -307,11 +342,11 @@ int main(int argc, char** argv){
         // Compare the banker and player's points. Highest wins
         if(point2 != 0){
             if(point1 > point2){
-                std::cout << "Banker has a higher point. Player loses $"
+                std::cout << "Banker has a higher point. You lose $"
                     << bet << "\n";
                 bankBal += bet + cover;
             }else{
-                std::cout << "Player has a higher point. Player wins $"
+                std::cout << pName << " has a higher point. You win $"
                     << bet * 2 << "\n";
                 balance += (bet * 2);
                 bankBal -= (bet *2);
@@ -322,7 +357,75 @@ int main(int argc, char** argv){
     // Display the final banker and player balances
     std::cout << "\n";
     std::cout << "The banker ends with $" << round(bankBal) << "\n";
-    std::cout << "The player ends with $" << round(balance) << "\n";
+    std::cout << pName << " ends with $" << round(balance) << "\n";
+
+    logResult = askFile();
+    if(logResult == true){
+        std::ofstream logs;
+        logs.open ("records.txt", std::ofstream::in | std::ofstream::ate);
+        // Check if the file was opened successfully before writing
+        if(logs.is_open()){
+            logs << "The banker ended with $" << bankBal << "\n";
+            logs << pName << " ends with $" << balance << "\n";
+            logs.close();
+            std::cout << "Session recorded." << "\n";
+        }else{
+            std::cout << "Unable to open file." << "\n";
+        }
+    }
+
+    return 0;
+}
+
+void roll(int *arr){
+    for(int i = 0; i < 3; i++){
+        arr[i] = (rand() % 6) + 1;
+    }
+}
+
+void roll(std::vector<int> &vect){
+    for(int i = 0; i < 3; i++){
+        vect.push_back((rand() % 6) + 1);
+    }
+}
+
+void sortVect(std::vector<int> &vect){
+    sort(vect.begin(), vect.end());
+}
+
+void swap(int *x, int *y){  
+    int temp = *x;  
+    *x = *y;  
+    *y = temp;  
+}  
+
+void bubbleSort(int *arr, int n){  
+    for (int i = 0; i < n - 1; i++){
+      for (int j = 0; j < n - i - 1; j++){
+        if (arr[j] > arr[j + 1]){
+            swap(&arr[j], &arr[j + 1]);
+        }
+      }
+    }  
+}
+
+void selectionSort(int *arr, int n){  
+    int min_idx;  
+  
+    for (int i = 0; i < n-1; i++){  
+        min_idx = i;  
+        for (int j = i+1; j < n; j++){
+            if (arr[j] < arr[min_idx]){
+                min_idx = j;
+            }
+            swap(&arr[min_idx], &arr[i]);
+        }
+    }  
+} 
+
+bool askFile(){
+    bool confirm;
+    char fileAsk;
 
     // Ask if the player would like to record the result in a file
     std::cout << "Would you like to record this result? [Y/N]: ";
@@ -336,29 +439,11 @@ int main(int argc, char** argv){
         fileAsk = toupper(fileAsk);
     }
 
-    // Switch statement to record the result or not
-    switch(fileAsk){
-        case 'Y':{
-            std::ofstream logs;
-            logs.open ("records.txt", std::ofstream::in | std::ofstream::ate);
-            // Check if the file was opened successfully before writing
-            if(logs.is_open()){
-                logs << "The banker ended with $" << bankBal << "\n";
-                logs << "The player ends with $" << balance << "\n";
-                logs.close();
-                std::cout << "Session recorded." << "\n";
-            }else{
-                std::cout << "Unable to open file." << "\n";
-            }
-            break;
-        }
-        case 'N':{
-            break;
-        }
-        default:{
-            break;
-        }
+    if(fileAsk == 'Y'){
+        confirm = true; 
+    }else if(fileAsk == 'N'){
+        confirm = false;
     }
-
-    return 0;
+    
+    return confirm;
 }
