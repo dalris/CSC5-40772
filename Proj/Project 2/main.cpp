@@ -7,6 +7,8 @@
  *  - One banker with preset bank
  *  - One normal player (User)
  *  - Single round play
+ * v2:
+ *  - Restructuring program to use arrays and functions
  */
 
 //System Libraries

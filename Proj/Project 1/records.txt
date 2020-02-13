@@ -5,3 +5,5 @@ The player ends with $0
 
 The banker ended with $0
 The player ends with $200
+The banker ended with $1100.5
+The player ends with $0
