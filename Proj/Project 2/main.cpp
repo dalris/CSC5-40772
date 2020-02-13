@@ -13,12 +13,13 @@
 
 //System Libraries
 #include <iostream>
-#include <cstdlib> // for Random
+#include <cstdlib> // for random
 #include <ctime> // for time
-#include <fstream> // for File output
+#include <fstream> // for file output
 #include <cctype> // for converting to uppercase
 #include <math.h> // for rounding numbers
-#include <algorithm> // Sorting array
+#include <algorithm> // for sorting array
+#include <vector> // for using vectors
 
 //User Libraries
 
@@ -32,12 +33,13 @@ int main(int argc, char** argv){
     //Set Random Number seed
     srand(time(0));
 
-    int dice[3], point1 = 0, point2 = 0;
+    int bDice[3], point1 = 0, point2 = 0;
     char fileAsk, betAsk;
     bool betting = true, bRoll = true, pRoll = true;
     // Money may have cents (atypical) due to professor requirements
     const float bank = 1000.50, stBal = 100.00;
     float noCover = 0, cover = 0, bet = 0, bankBal, balance;
+    std::vector<int> pDice;
 
     // Let the player know the starting amounts
     std::cout << "The starting bank is $" << bank << "\n";
@@ -148,17 +150,18 @@ int main(int argc, char** argv){
 
         // Roll three dice
         for(int i = 0; i < 3; i++){
-            dice[i] = (rand() & 6) + 1;
+            bDice[i] = (rand() & 6) + 1;
         }
 
-        std::sort(dice, dice + 3);
+        std::sort(bDice, bDice + 3);
 
         // Display the banker's three dice rolls
         std::cout << "The banker's roll is: ";
-        std::cout << dice[0] << " " << dice[1] << " and " << dice[2] << "\n\n";
+        std::cout << bDice[0] << " " << bDice[1] << " and "
+            << bDice[2] << "\n\n";
         
         // All three dice rolled the same are a "triples" automatic win
-        if(dice[0] == dice[1] == dice[2]){
+        if(bDice[0] == bDice[1] == bDice[2]){
             std::cout << "Triples, banker automatic win" << "\n";
             if(bet > 0){
                 std::cout << "Player loses $" << bet << "\n"; 
@@ -169,7 +172,7 @@ int main(int argc, char** argv){
             bRoll = false;
             pRoll = false;
         // A roll of 4, 5, 6 is a "straight kill" automatic win
-        }else if(dice[0] == 4 && dice[1] == 5 && dice[3] == 6){
+        }else if(bDice[0] == 4 && bDice[1] == 5 && bDice[3] == 6){
             std::cout << "4-5-6 straight kill, banker automatic win"
                 << "\n";
             if(bet > 0){
@@ -181,7 +184,7 @@ int main(int argc, char** argv){
             bRoll = false;
             pRoll = false;
         // A non-6 pair rolled with a 6 is an automatic win
-        }else if(dice[0] == dice[1] && dice[0] != 6 && dice[2] == 6){
+        }else if(bDice[0] == bDice[1] && bDice[0] != 6 && bDice[2] == 6){
             std::cout << "Non-6 pair with a 6, banker automatic win"
                 << "\n";
             if(bet > 0){
@@ -193,7 +196,7 @@ int main(int argc, char** argv){
             bRoll = false;
             pRoll = false;
         // A roll of 1, 2, 3 is a "straight lose" automatic loss
-        }else if(dice[0] == 1 && dice[1] == 2 && dice[2] == 3){
+        }else if(bDice[0] == 1 && bDice[1] == 2 && bDice[2] == 3){
             std::cout << "1-2-3 straight lose, banker automatic loss"
                 << "\n";
             if(bet > 0){
@@ -204,7 +207,7 @@ int main(int argc, char** argv){
             bRoll = false;
             pRoll = false;
         // A non-1 pair rolled with a 1 is an automatic loss
-        }else if(dice[1] == dice[2] && dice[1] != 1 && dice[0] == 1){
+        }else if(bDice[1] == bDice[2] && bDice[1] != 1 && bDice[0] == 1){
             std::cout << "Non-1 pair with a 1, banker automatic loss"
                 << "\n";
             if(bet > 0){
@@ -216,16 +219,16 @@ int main(int argc, char** argv){
             pRoll = false;
         // A pair rolled with a different number grants a point equal to
         //  the individual number
-        }else if(dice[0] == dice[1]){
-            point1 = dice[2];
+        }else if(bDice[0] == bDice[1]){
+            point1 = bDice[2];
             std::cout << "The banker's point is: " << point1 << "\n";
             bRoll = false;
-        }else if(dice[1] == dice[2]){
-            point1 = dice[0];
+        }else if(bDice[1] == bDice[2]){
+            point1 = bDice[0];
             std::cout << "The banker's point is: " << point1 << "\n";
             bRoll = false;
-        }else if(dice[0] == dice[2]){
-            point1 = dice[1];
+        }else if(bDice[0] == bDice[2]){
+            point1 = bDice[1];
             std::cout << "The banker's point is: " << point1 << "\n";
             bRoll = false;
         }
@@ -237,18 +240,19 @@ int main(int argc, char** argv){
         std::cout << "Player rolls the dice." << "\n";
 
         for(int i = 0; i < 3; i++){
-            dice[i] = (rand() & 6) + 1;
+            pDice.push_back((rand() & 6) + 1);
         }
 
-        std::sort(dice, dice + 3);
+        std::sort(pDice.begin(), pDice.end());
 
         // Display the player's three dice rolls
         std::cout << "The player's roll is: ";
-        std::cout << dice[0] << " " << dice[1] << " and " << dice[2] << "\n\n";
+        std::cout << pDice[0] << " " << pDice[1] << " and "
+            << pDice[2] << "\n\n";
 
         // All three dice rolled as 1 is an automatic win with a bet
         //  multiplier of 5
-        if(dice[0] == 1 && dice[1] == 1 && dice[2] == 1){
+        if(pDice[0] == 1 && pDice[1] == 1 && pDice[2] == 1){
             std::cout << "Triple 1s, player automatic win" << "\n";
             if(bet > 0){
                 std::cout << "Player wins $" << bet * 5 << "\n";
@@ -257,7 +261,7 @@ int main(int argc, char** argv){
             }
             pRoll = false;
         // Non-1 triples is an automatic win with a bet multipler of 3
-        }else if(dice[0] == dice[1] == dice[2] && dice[0] != 1){
+        }else if(pDice[0] == pDice[1] == pDice[2] && pDice[0] != 1){
             std::cout << "Triples, player automatic win" << "\n";
             if(bet > 0){
                 std::cout << "Player wins $" << bet * 3 << "\n";
@@ -265,7 +269,7 @@ int main(int argc, char** argv){
                 bankBal -= (bet * 2);
             }
             pRoll = false;
-        }else if(dice[0] == 4 && dice[1] == 5 && dice[2] == 6){
+        }else if(pDice[0] == 4 && pDice[1] == 5 && pDice[2] == 6){
             std::cout << "4-5-6 straight kill, player automatic win"
                 << "\n";
             if(bet > 0){
@@ -274,7 +278,7 @@ int main(int argc, char** argv){
                 bankBal -= (bet * 2);
             }
             pRoll = false;
-        }else if(dice[0] == 1 && dice[1] == 2 && dice[2] == 3){
+        }else if(pDice[0] == 1 && pDice[1] == 2 && pDice[2] == 3){
             std::cout << "1-2-3 straight lose, player automatic loss"
                 << "\n";
             if(bet > 0){
@@ -284,16 +288,16 @@ int main(int argc, char** argv){
             pRoll = false;
         // Set the player's point just like the banker's point if
         //  a pair is rolled
-        }else if(dice[0] == dice[1]){
-            point2 = dice[2];
+        }else if(pDice[0] == pDice[1]){
+            point2 = pDice[2];
             std::cout << "The player's point is: " << point2 << "\n";
             pRoll = false;
-        }else if(dice[1] == dice[2]){
-            point2 = dice[0];
+        }else if(pDice[1] == pDice[2]){
+            point2 = pDice[0];
             std::cout << "The player's point is: " << point2 << "\n";
             pRoll = false;
-        }else if(dice[0] == dice[2]){
-            point2 = dice[1];
+        }else if(pDice[0] == pDice[2]){
+            point2 = pDice[1];
             std::cout << "The player's point is: " << point2 << "\n";
             pRoll = false;
         }
