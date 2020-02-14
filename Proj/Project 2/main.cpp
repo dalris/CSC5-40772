@@ -13,6 +13,7 @@
 
 //System Libraries
 #include <iostream>
+#include <iomanip> // for output formatting
 #include <cstdlib> // for random
 #include <ctime> // for time
 #include <fstream> // for file output
@@ -51,13 +52,17 @@ int main(int argc, char** argv){
     std::vector<int> pDice;
     std::string pName;
 
+    std::cout << std::fixed;
+
     // String for player name
     std::cout << "Enter your name: ";
     std::cin >> pName;
 
     // Let the player know the starting amounts
-    std::cout << "The starting bank is $" << bank << "\n";
-    std::cout << "Your starting balance is $" << stBal << "\n\n";
+    std::cout << std::setprecision(2) << "The starting bank is $"
+        << bank << "\n";
+    std::cout << std::setprecision(2) <<  "Your starting balance is $"
+        << stBal << "\n\n";
     
     bankBal = bank;
     balance = stBal;
@@ -418,7 +423,7 @@ void bubbleSort(int *arr, int n){
 }
 
 // Selection sort function with array
-void selectionSort(int *arr, int n){  
+void selectionSort(int *arr, int n = 1){  
     int var;  
   
     for (int i = 0; i < n-1; i++){  
@@ -449,11 +454,7 @@ bool askFile(){
         fileAsk = toupper(fileAsk);
     }
 
-    if(fileAsk == 'Y'){
-        confirm = true; 
-    }else if(fileAsk == 'N'){
-        confirm = false;
-    }
+    confirm = fileAsk == 'Y' ? true : false;
     
     return confirm;
 }
