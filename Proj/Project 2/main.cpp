@@ -51,6 +51,7 @@ int main(int argc, char** argv){
     std::vector<int> pDice;
     std::string pName;
 
+    // String for player name
     std::cout << "Enter your name: ";
     std::cin >> pName;
 
@@ -167,6 +168,7 @@ int main(int argc, char** argv){
         // Roll then sort banker's three dice
         roll(bDice);
 
+        // Ask what type of sort to use
         std::cout << "How would you like to sort the dice?" << "\n";
         std::cout << "1. Bubble Sort" << "\n";
         std::cout << "2. Selection Sort" << "\n";
@@ -359,6 +361,7 @@ int main(int argc, char** argv){
     std::cout << "The banker ends with $" << round(bankBal) << "\n";
     std::cout << pName << " ends with $" << round(balance) << "\n";
 
+    // Ask if the user wants to output the result to a file
     logResult = askFile();
     if(logResult == true){
         std::ofstream logs;
@@ -377,28 +380,33 @@ int main(int argc, char** argv){
     return 0;
 }
 
+// Roll 3 dice array
 void roll(int *arr){
     for(int i = 0; i < 3; i++){
         arr[i] = (rand() % 6) + 1;
     }
 }
 
+// Roll 3 dice vector, overloaded
 void roll(std::vector<int> &vect){
     for(int i = 0; i < 3; i++){
         vect.push_back((rand() % 6) + 1);
     }
 }
 
+// Sort the vector
 void sortVect(std::vector<int> &vect){
     sort(vect.begin(), vect.end());
 }
 
+// Swap function
 void swap(int *x, int *y){  
     int temp = *x;  
     *x = *y;  
     *y = temp;  
 }  
 
+// Bubble sort function with array
 void bubbleSort(int *arr, int n){  
     for (int i = 0; i < n - 1; i++){
       for (int j = 0; j < n - i - 1; j++){
@@ -409,20 +417,22 @@ void bubbleSort(int *arr, int n){
     }  
 }
 
+// Selection sort function with array
 void selectionSort(int *arr, int n){  
-    int min_idx;  
+    int var;  
   
     for (int i = 0; i < n-1; i++){  
-        min_idx = i;  
+        var = i;  
         for (int j = i+1; j < n; j++){
-            if (arr[j] < arr[min_idx]){
-                min_idx = j;
+            if (arr[j] < arr[var]){
+                var = j;
             }
-            swap(&arr[min_idx], &arr[i]);
+            swap(&arr[var], &arr[i]);
         }
     }  
 } 
 
+// Ask user if they want to record to file and validate input
 bool askFile(){
     bool confirm;
     char fileAsk;
