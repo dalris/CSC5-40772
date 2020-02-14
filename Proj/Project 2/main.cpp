@@ -363,8 +363,10 @@ int main(int argc, char** argv){
 
     // Display the final banker and player balances
     std::cout << "\n";
-    std::cout << "The banker ends with $" << round(bankBal) << "\n";
-    std::cout << pName << " ends with $" << round(balance) << "\n";
+    std::cout << std::setprecision(2) << "The banker ends with $"
+        << round(bankBal) << "\n";
+    std::cout << std::setprecision(2) << pName << " ends with $"
+        << round(balance) << "\n";
 
     // Ask if the user wants to output the result to a file
     logRes = askFile();
