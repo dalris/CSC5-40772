@@ -44,7 +44,7 @@ int main(int argc, char** argv){
     static const int size = 3;
     int bDice[size], point1 = 0, point2 = 0, pickSort;
     char betAsk;
-    bool betting = true, bRoll = true, pRoll = true, logResult;
+    bool betting = true, bRoll = true, pRoll = true, logRes;
     // Money may have cents (atypical) due to professor requirements
     const float bank = 1000.50, stBal = 100.00;
     float noCover = 0, cover = 0, bet = 0, bankBal, balance;
@@ -362,8 +362,8 @@ int main(int argc, char** argv){
     std::cout << pName << " ends with $" << round(balance) << "\n";
 
     // Ask if the user wants to output the result to a file
-    logResult = askFile();
-    if(logResult == true){
+    logRes = askFile();
+    if(logRes == true){
         std::ofstream logs;
         logs.open ("records.txt", std::ofstream::in | std::ofstream::ate);
         // Check if the file was opened successfully before writing
