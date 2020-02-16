@@ -1,4 +1,8 @@
 /* 
+ * File:   main.cpp
+ * Author: Danziel Nguyen
+ * Created on Feb 16
+ * Purpose:  Sorting a 2-D array of characters if row and columns match
  * Note:  This time you create the strcmp() function that takes into
  * account the new sort order.
  */
@@ -28,8 +32,7 @@ int main(int argc, char** argv){
     char replace[COLMAX], with[COLMAX];//New sort order
     
     //Input the new sort order then sort
-    cout << "Modify the sort order by swapping these characters." =
-        << "\n";
+    cout << "Modify the sort order by swapping these characters." << "\n";
     cin >> replace;
     cout << "With the following characters" << "\n";
     cin >> with;
@@ -48,7 +51,7 @@ int main(int argc, char** argv){
     //Compare the size input vs. size detected and sort if same
     //Else output different size
     if(rowDet == rowIn && colDet == colIn){
-        sort(array, rowIn, colIn);
+        sort(array, rowIn, colIn, replace, with);
         cout << "The Sorted Array" << "\n";
         print(array, rowIn, colIn);
     }else{
@@ -79,14 +82,14 @@ int read(char arr[][COLMAX], int &x){
     return longest;
 }
 
- void sort(char arr[][COLMAX], int row, int col, const char[],const char[]){
+ void sort(char arr[][COLMAX], int row, int col, const char replace[], const char with[]){
     char* temp;
 
     for (int j = 0; j < row - 1; j++)
     {
         for (int i = j + 1; i < row; i++)
         {
-            if (strcmp(arr[j], arr[i]) > 0)
+            if (strcmp(arr[j], arr[i], replace, with) > 0)
             {
                 temp = new char[strlen(arr[j]) + 1];
                 strcpy(temp, arr[j]);
@@ -106,6 +109,25 @@ void print(const char arr[][COLMAX], int x, int y){
     }
 }
 
-int strcmp(char [], char [], const char [], const char []){
-    
+int strcmp(char arr1[], char arr2[], const char replace[], const char with[]){
+    char temp1 = 0, temp2 = 0, temp3 = 0, temp4 = 0;
+
+    for(int i = 0; i < strlen(arr1); i++){
+        for(int j = 0; j < strlen(arr2); j++){
+            if(arr1[i] != arr2[j]){
+                for(int x = 0; x < strlen(replace); x++){
+                    if(arr1[i] == replace[x]){
+                        temp1 = x;
+                    }
+                    if(arr2[j] == replace[x]){
+                        temp2 = x;
+                    }
+                }
+                temp3 = with[temp1];
+                temp4 = with[temp2];
+            }
+        }
+    }
+
+    return temp3 - temp4;
 }
