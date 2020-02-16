@@ -75,32 +75,26 @@ int read(char arr[][COLMAX], int &x){
 }
 
 void sort(char arr[][COLMAX], int row, int col){
-    char temp[80];
-    int cmp;
+    char temp[40];
+    char shortest = arr[0][0];
 
-    // cout << "Pre-sort: " << "\n";
-    // for(int i = 0; i < row; i++){
-    //     for(int j = 0; j < col; j++){
-    //         cout << arr[i][j];
-    //     }
-    //     cout << "\n";
-    // }
-    
     for(int i = 0; i < row; i++){
-        if(strcmp(arr[i], arr[row - 1]) > 0){
-            strcpy(temp, arr[i]);
-            strcpy(arr[i], arr[row - 1]);
-            strcpy(arr[row - 1], temp);
+        if(shortest > arr[i][0]){
+            shortest = arr[i][0];
         }
     }
 
-    // cout << "Post-sort: " << "\n";
-    // for(int i = 0; i < row; i++){
-    //     for(int j = 0; j < col; j++){
-    //         cout << arr[i][j];
-    //     }
-    //     cout << "\n";
-    // }
+    do{
+        for(int i = 0; i < row; i++){
+            if(i != row - 1){
+                if(strcmp(arr[i], arr[i + 1]) > 0){
+                    strcpy(temp, arr[i]);
+                    strcpy(arr[i], arr[i + 1]);
+                    strcpy(arr[i + 1], temp);
+                }
+            }
+        }
+    }while(arr[0][0] != shortest);
 }
 
 void print(const char arr[][COLMAX], int x, int y){
