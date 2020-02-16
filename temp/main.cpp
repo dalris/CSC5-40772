@@ -47,11 +47,12 @@ int main(int argc, char** argv){
     
     //Compare the size input vs. size detected and sort if same
     //Else output different size
-    //if(rowDet==rowIn&&colDet==colIn){
-        sort(array,rowIn,colIn,replace,with);
-        cout<<"The Sorted Array"<<endl;
-        print(array,rowIn,colIn);
-        
+    if(rowDet == rowIn && colDet == colIn){
+        sort(array, rowIn, colIn, replace, with);
+        cout << "The Sorted Array" << "\n";
+        print(array, rowIn, colIn);
+    }
+
     //Exit
     return 0;
 }
