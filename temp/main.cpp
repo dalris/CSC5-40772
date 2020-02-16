@@ -48,9 +48,16 @@ int main(int argc, char** argv){
     //Compare the size input vs. size detected and sort if same
     //Else output different size
     if(rowDet == rowIn && colDet == colIn){
-        sort(array, rowIn, colIn, replace, with);
+        sort(array, rowIn, colIn);
         cout << "The Sorted Array" << "\n";
         print(array, rowIn, colIn);
+    }else{
+        if(rowDet != rowIn)
+        cout << (rowDet<rowIn?"Row Input size less than specified.":
+            "Row Input size greater than specified.") << "\n";
+        if(colDet != colIn)
+        cout << (colDet<colIn?"Column Input size less than specified.":
+            "Column Input size greater than specified.") << "\n";
     }
 
     //Exit
